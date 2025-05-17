@@ -10,6 +10,7 @@ import { useMovies } from "../context/MoviesContext";
 import { useAuth } from "../context/AuthContext";
 import { getImageUrl, rateMovie } from "../api/tmdbApi";
 import LoginPopup from "../components/common/LoginPopup";
+import LoadingSpinner from "@/components/common/Loading";
 
 const MovieDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,11 +36,27 @@ const MovieDetail: React.FC = () => {
     value?: number;
   } | null>(null);
 
+  const [isLoadingFilm, setIsLoadingFilm] = useState(true);
+
   useEffect(() => {
+    window.scrollTo(0, 0);
+    setIsLoadingFilm(true);
+
     if (id) {
       fetchMovieDetails(id);
     }
   }, [id]);
+  useEffect(() => {
+    if (!loading && currentMovie) {
+      setIsLoadingFilm(false);
+    }
+  }, [loading, currentMovie]);
+
+  useEffect(() => {
+    if (currentMovie && id && currentMovie.id.toString() !== id) {
+      setIsLoadingFilm(true);
+    }
+  }, [currentMovie, id]);
 
   const movieInWatchlist = currentMovie
     ? isInWatchlist(currentMovie.id)
@@ -54,7 +71,6 @@ const MovieDetail: React.FC = () => {
 
     const checkAuthAndExecutePendingAction = setInterval(() => {
       if (authState.isAuthenticated && pendingAction) {
-        // Jalankan aksi yang tertunda
         if (pendingAction.type === "watchlist") {
           executeWatchlistAction();
         } else if (pendingAction.type === "favorite") {
@@ -154,12 +170,8 @@ const MovieDetail: React.FC = () => {
     executeRatingAction(rating);
   };
 
-  if (loading && !currentMovie) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="w-12 h-12 border-4 border-tmdb-blue border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+  if (isLoadingFilm) {
+    return <LoadingSpinner fullHeight />;
   }
 
   if (error) {

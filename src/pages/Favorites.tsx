@@ -3,6 +3,7 @@ import MovieCard from "../components/movie/MovieCard";
 import { useMovies } from "../context/MoviesContext";
 import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import LoadingSpinner from "@/components/common/Loading";
 
 const Favorites: React.FC = () => {
   const { state, fetchFavorites } = useMovies();
@@ -20,11 +21,7 @@ const Favorites: React.FC = () => {
   }
 
   if (loading && !favorites.length) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="w-12 h-12 border-4 border-tmdb-blue border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner fullHeight />;
   }
 
   if (error) {

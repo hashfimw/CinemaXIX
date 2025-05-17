@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import MovieList from "../components/movie/MovieList";
 import { useMovies } from "../context/MoviesContext";
+import LoadingSpinner from "@/components/common/Loading";
 
 const Home: React.FC = () => {
   const { state, fetchNowPlaying, fetchTopRated } = useMovies();
@@ -12,11 +13,7 @@ const Home: React.FC = () => {
   }, []);
 
   if (loading && (!nowPlaying.length || !topRated.length)) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="w-12 h-12 border-4 border-cinema-blue border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner fullHeight />;
   }
 
   if (error) {

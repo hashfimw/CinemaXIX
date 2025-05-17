@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import MovieCard from "../components/movie/MovieCard";
 import { useMovies } from "../context/MoviesContext";
+import LoadingSpinner from "@/components/common/Loading";
 
 const Search: React.FC = () => {
   const location = useLocation();
@@ -23,11 +24,7 @@ const Search: React.FC = () => {
   }, [query]);
 
   if (loading && !searchResults.length) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="w-12 h-12 border-4 border-cinema-blue border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
